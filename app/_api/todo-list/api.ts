@@ -2,7 +2,7 @@
 import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { AddTodoModel } from "./type";
-
+import { redirect } from 'next/navigation'
 export const AddTodoApi = async (FormData: FormData) => {
   const title = FormData.get("title") as string;
   const description = FormData.get("description") as string;
@@ -26,10 +26,9 @@ export const AddTodoApi = async (FormData: FormData) => {
   });
 
   const data = await res.json()
-  // console.log(data)
   if (res.status == 200) {
-    // return data
     revalidatePath('/todo-app/todo-list')
+    return data
   } else {
     return data;
   }
@@ -43,10 +42,15 @@ export const ListTodoApi = async (token : string) => {
       'Authorization' : `bearer ${token}`
     }
   })
+  
   const data = res.json()
   if(res.status == 200){
     return data
-  }else{
+  }
+  else if(res.status == 403){
+    return redirect('/auth')
+  }
+  else{
     return data
   }
 }
@@ -56,7 +60,6 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   const id = FormData.get('id')
   const title = FormData.get('title') as string
   const description = FormData.get('description') as string
-  console.log(FormData)
   
   const editData = {
     title : title,
@@ -70,6 +73,26 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
       'Authorization' : `bearer ${token}`
     },
     body : JSON.stringify(editData)
+  })
+  
+  const data = await res.json()
+  
+  if(res.status == 200){
+    revalidatePath('/todo-app/todo-list')
+    return data
+  }else{
+    return data
+  }
+}
+
+export const DeleteTodoApi = async (token : string, FormData:FormData) => {
+  const id = FormData.get('id') as string
+  const res = await fetch(`http://localhost:1372/deleteTodo/${id}`,{
+    method : 'DELETE',
+    headers : {
+      'Content-Type' : 'application/json',
+      'Authorization' : `bearer ${token}`
+    }
   })
   const data = await res.json()
   console.log(data)

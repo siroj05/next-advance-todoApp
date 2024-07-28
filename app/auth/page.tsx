@@ -2,7 +2,6 @@
 import CardLoginForm from "@/components/card-login";
 import ToastAuth from "@/components/toast-auth";
 import { useState } from "react";
-
 export default function Home() {
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
   if(isSuccess){

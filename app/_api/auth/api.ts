@@ -1,4 +1,5 @@
 "use server";
+import { cookies } from 'next/headers'
 export interface userRegis {
   name : string
   username : string
@@ -53,6 +54,11 @@ export const loginApi = async (FormData : FormData) => {
     body : JSON.stringify(userLogin)
   })
   const data = await res.json()
+  const maxAge = 60 * 60 * 1000
+  cookies().set('token', data.token, { expires: Date.now() + maxAge });
+  cookies().set('nama', data.name, { expires: Date.now() + maxAge });
+  cookies().set('userId', data.userId, { expires: Date.now() + maxAge });
+  
   if(res.status == 200){
     return data
   }else{

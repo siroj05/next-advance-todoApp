@@ -33,23 +33,7 @@ export default function FormLogin({
             let res = await loginApi(formData)
             ref.current?.reset()
             if(res.token){
-              
               const oneHour = 60 * 60 * 1000
-              setCookie('token', res.token, {
-                maxAge: oneHour, // Token akan disimpan selama 1 jam
-                path: '/',
-                sameSite:'lax'
-              });
-              setCookie('userId', res.userId, {
-                maxAge: oneHour, // Token akan disimpan selama 1 jam
-                path: '/',
-                sameSite:'lax'
-              });
-              setCookie('name', res.name, {
-                maxAge: oneHour, // Token akan disimpan selama 1 jam
-                path: '/',
-                sameSite:'lax'
-              });
               setErr('')
               router.push('/todo-app')
             }else{
