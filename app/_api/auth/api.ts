@@ -1,6 +1,4 @@
 "use server";
-import { cookies } from "next/headers";
-import { setCookie, getCookie} from 'cookies-next';
 export interface userRegis {
   name : string
   username : string
