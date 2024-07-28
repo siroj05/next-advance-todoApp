@@ -8,11 +8,12 @@ export const AddTodoApi = async (FormData: FormData) => {
   const description = FormData.get("description") as string;
   const userId = FormData.get("userId") as string;
   const token = FormData.get("token") as string;
+  const startDate = FormData.get("startDate") as string;
   const todo: AddTodoModel = {
     userId: parseInt(userId),
     title: title,
     description: description,
-    start_date: "05-08-2024",
+    start_date: startDate,
     end_date: "07-09-2024",
   };
 
@@ -60,12 +61,14 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   const id = FormData.get('id')
   const title = FormData.get('title') as string
   const description = FormData.get('description') as string
+  const startDate = FormData.get("startDate") as string;
   
   const editData = {
     title : title,
-    description : description
+    description : description,
+    start_date: startDate
   }
-
+  
   const res = await fetch(`http://localhost:1372/editTodo/${id}`,{
     method : 'PUT',
     headers : {
