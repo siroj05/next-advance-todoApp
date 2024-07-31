@@ -17,6 +17,8 @@ import ToastSuccess from "@/components/toast-success";
 import { SquarePen } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { DatePicker, getDDMMYYY } from "@/components/date-picker";
+import { CalendarDays } from 'lucide-react';
+import { ComboboxLevel } from "@/components/combobox/combobox";
 
 interface Props {
   ListTodo: any;
@@ -29,9 +31,19 @@ export default function ListTodo({ ListTodo, token }: Props) {
   const [dates, setDates] = useState<Record<number, Date>>({});
   const [isSuccess, setIsSuccess] = useState<any>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [level, setLevel] = useState<any>()
 
   useEffect(() => {
     setTodos(ListTodo);
+
+    const initialLevel = ListTodo.reduce(
+      (acc: any, item: DetailListTodoModel, index:number)=>{
+        const level = item.level
+        acc[index] = level
+        return acc
+      },
+      {}
+    )
     const parseDate = (dateString: string): Date => {
       const [day, month, year] = dateString.split("-").map(Number);
       return new Date(year, month - 1, day);
@@ -52,6 +64,8 @@ export default function ListTodo({ ListTodo, token }: Props) {
       },
       {}
     );
+
+    setLevel(initialLevel)
     setDates(initialDates);
   }, [ListTodo]);
 
@@ -60,7 +74,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
       setIsSuccess(false);
     }, 1000);
   }
-
+  
   const handleClicAccordion = (e: any) => {
     // console.log('ok')
     const target = e.currentTarget;
@@ -102,6 +116,12 @@ export default function ListTodo({ ListTodo, token }: Props) {
                 <Plus className="w-4 h-4 my-auto" />
                 <span className="mx-2">{item.title}</span>
               </AccordionTrigger>
+              {/* <div className="text-xs mx-2 rounded-md my-1 border inline-block">
+                <div className="flex p-1 ">
+                  <CalendarDays className="w-4 h-4 my-auto" />
+                  <span className="mx-2">23 Jun 2024</span> 
+                </div>
+              </div> */}
               <AccordionContent className="my-1 mx-2">
                 <div className="flex justify-end w-full gap-1">
                   {isReadOnly ? (
@@ -139,6 +159,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   name="startDate"
                   value={dates ? getDDMMYYY(dates[i]) : ""}
                 />
+                <input type="hidden" name="level" value={level[i]} />
                 <Input
                   className="my-1"
                   id="title"
@@ -146,6 +167,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   placeholder="Write Title"
                   readOnly={isReadOnly}
                   defaultValue={item.title}
+                  maxLength={50}
                 />
                 <Textarea
                   readOnly={isReadOnly}
@@ -154,14 +176,22 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   placeholder="Write Description"
                   defaultValue={item.description}
                   className="my-2"
+                  maxLength={1000}
                 />
-                <DatePicker
-                  readonly={isReadOnly}
-                  date={dates[i]}
-                  setDate={(date) =>
-                    setDates((prev: any) => ({ ...prev, [i]: date }))
-                  }
-                />
+                <div className="flex gap-1">
+                  <DatePicker
+                    readonly={isReadOnly}
+                    date={dates[i]}
+                    setDate={(date) =>
+                      setDates((prev: any) => ({ ...prev, [i]: date }))
+                    }
+                  />
+                  <ComboboxLevel 
+                    setValue={(level) => setLevel((prev:any) => ({...prev, [i] : level}))}
+                    value={level[i]}
+                    readonly={isReadOnly}
+                  />
+                </div>
               </AccordionContent>
             </AccordionItem>
           ))}

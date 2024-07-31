@@ -6,17 +6,23 @@ import { redirect } from 'next/navigation'
 export const AddTodoApi = async (FormData: FormData) => {
   const title = FormData.get("title") as string;
   const description = FormData.get("description") as string;
+  const level = FormData.get("level") as string;
   const userId = FormData.get("userId") as string;
   const token = FormData.get("token") as string;
   const startDate = FormData.get("startDate") as string;
+
+  if(title.length > 50) return {validation : 'Max Length 10!'}
+  if(description.length > 1000) return {validation : 'Max Length 1000!'}
+
   const todo: AddTodoModel = {
     userId: parseInt(userId),
     title: title,
     description: description,
+    level : level,
     start_date: startDate,
     end_date: "07-09-2024",
   };
-
+  console.log(todo)
   const res = await fetch("http://localhost:1372/addTodo", {
     method: "POST",
     headers: {
@@ -44,7 +50,8 @@ export const ListTodoApi = async (token : string) => {
     }
   })
   
-  const data = res.json()
+  const data = await res.json()
+  // console.log(res)
   if(res.status == 200){
     return data
   }
@@ -62,10 +69,15 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   const title = FormData.get('title') as string
   const description = FormData.get('description') as string
   const startDate = FormData.get("startDate") as string;
-  
+  const level = FormData.get("level") as string;
+
+  if(title.length > 50) return {validation : 'Max Length 10!'}
+  if(description.length > 1000) return {validation : 'Max Length 1000!'}
+
   const editData = {
     title : title,
     description : description,
+    level : level,
     start_date: startDate
   }
   
@@ -79,7 +91,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   })
   
   const data = await res.json()
-  
+
   if(res.status == 200){
     revalidatePath('/todo-app/todo-list')
     return data
@@ -98,13 +110,33 @@ export const DeleteTodoApi = async (token : string, FormData:FormData) => {
     }
   })
   const data = await res.json()
-  console.log(data)
   if(res.status == 200){
     revalidatePath('/todo-app/todo-list')
     return data
   }else{
     return data
   }
+}
+
+export const getLevelTodo = async (token : any) => {
+  try {
+      const res = await fetch('http://localhost:1372/levelPriority', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      return data
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
 }
 
 

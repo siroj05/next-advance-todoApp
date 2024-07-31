@@ -27,6 +27,7 @@ export function DatePicker(
   }:Props
 ) {
   date = date ? new Date(date) : undefined
+
   return (
     <Popover>
       <PopoverTrigger asChild>
