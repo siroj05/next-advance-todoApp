@@ -58,7 +58,7 @@ export function ComboboxStatus(
         >
           {value
             ? data?.find((item: status) => item.statusCode === value)?.statusName
-            : "Select Priority..."}
+            : "Set status"}
           {
             !readonly &&
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
