@@ -16,14 +16,16 @@ import {
 interface Props {
   date? : Date,
   setDate: (value : Date | undefined) => void
-  readonly?:boolean
+  readonly?:boolean,
+  label : string
 }
 
 export function DatePicker(
   {
     date,
     setDate,
-    readonly=false
+    readonly=false,
+    label
   }:Props
 ) {
   date = date ? new Date(date) : undefined
@@ -34,13 +36,13 @@ export function DatePicker(
         <Button
           variant={"outline"}
           className={cn(
-            `w-[280px] justify-start text-left font-normal bg-white`,
+            `w-[200px] justify-start text-left font-normal bg-white`,
             `${readonly? 'bg-orange-50' : 'bg-white'}`,
             !date && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? format(date, "PPP") : <span>{label}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

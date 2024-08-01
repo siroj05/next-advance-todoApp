@@ -10,6 +10,7 @@ import ToastSuccess from "@/components/toast-success";
 import { DatePicker } from "@/components/date-picker";
 import { getDDMMYYY } from "@/components/date-picker";
 import { ComboboxLevel } from "@/components/combobox/combobox";
+import { Label } from "@/components/ui/label";
 
 export default function FormAddTodo() {
   const ref = useRef<HTMLFormElement>(null);
@@ -17,6 +18,7 @@ export default function FormAddTodo() {
   const token = getCookie("token");
   const [isSuccess, setIsSuccess] = useState<any>();
   const [date, setDate] = useState<Date>()
+  const [dueDate, setDueDate] = useState<Date>()
   const [level, setLevel] = useState<any>()
 
   if (isSuccess) {
@@ -32,10 +34,10 @@ export default function FormAddTodo() {
         ref={ref}
         action={async (formData) => {
           let res = await AddTodoApi(formData);
-          // console.log(res)
           setIsSuccess(res);
           if(!res?.error?.length){
             setDate(undefined)
+            setDueDate(undefined)
             setLevel('')
             ref.current?.reset();
           }
@@ -45,6 +47,7 @@ export default function FormAddTodo() {
         <input type="hidden" name="token" value={token} /> 
         <input type="hidden" name="level" value={level} /> 
         <input type="hidden" name="startDate" value={date ? getDDMMYYY(date) : ''} /> 
+        <input type="hidden" name="dueDate" value={dueDate ? getDDMMYYY(dueDate) : ''} /> 
         <Input
           className="my-1"
           id="title"
@@ -60,14 +63,28 @@ export default function FormAddTodo() {
           maxLength={1000}
         />
         <div className="flex gap-1">
-          <DatePicker
-            date={date}
-            setDate={setDate}
-          />
-          <ComboboxLevel
-            setValue={setLevel}
-            value={level}
-          />
+          <div>
+            <Label className="block my-1">Start Date</Label>
+            <DatePicker
+              date={date}
+              setDate={setDate}
+              label="Pick a Date"
+            />
+          </div>
+          <div>
+            <Label className="block my-1">Due Date</Label>
+            <DatePicker
+              date={dueDate}
+              setDate={setDueDate}
+              label="Pick a Date"
+            />
+          </div>
+          <div className="mt-auto">
+            <ComboboxLevel
+              setValue={setLevel}
+              value={level}
+            />  
+          </div>
         </div>
         <div className="flex justify-end w-full">
           <AddTodoButton>Save</AddTodoButton>

@@ -19,7 +19,9 @@ import { Trash2 } from "lucide-react";
 import { DatePicker, getDDMMYYY } from "@/components/date-picker";
 import { CalendarDays } from 'lucide-react';
 import { ComboboxLevel } from "@/components/combobox/combobox";
-
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns"
 interface Props {
   ListTodo: any;
   token: string;
@@ -29,6 +31,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
   const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
   const [todos, setTodos] = useState<DetailListTodoModel[]>([]);
   const [dates, setDates] = useState<Record<number, Date>>({});
+  const [dueDates, setDueDates] = useState<Record<number, Date>>({})
   const [isSuccess, setIsSuccess] = useState<any>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [level, setLevel] = useState<any>()
@@ -44,6 +47,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
       },
       {}
     )
+
     const parseDate = (dateString: string): Date => {
       const [day, month, year] = dateString.split("-").map(Number);
       return new Date(year, month - 1, day);
@@ -65,6 +69,22 @@ export default function ListTodo({ ListTodo, token }: Props) {
       {}
     );
 
+    const initialDueDates = ListTodo.reduce(
+      (acc : Record<number, Date>, item : DetailListTodoModel, index:number) => {
+        const date = parseDate(item.end_date);
+        if(isNaN(date.getTime())){
+          console.error(
+            `Invalid date format for item at index ${index}:`,
+            item.start_date
+          );
+        }else{
+          acc[index] = date
+        }
+        return acc
+      },{}
+    )
+
+    setDueDates(initialDueDates)
     setLevel(initialLevel)
     setDates(initialDates);
   }, [ListTodo]);
@@ -76,15 +96,9 @@ export default function ListTodo({ ListTodo, token }: Props) {
   }
   
   const handleClicAccordion = (e: any) => {
-    // console.log('ok')
     const target = e.currentTarget;
     const state = target.getAttribute("data-state");
     if (state === "closed") setIsReadOnly(true);
-    // console.log(isSuccess)
-    // if (isSuccess?.success){
-    //   console.log('masuk')
-    //   target.setAttribute("data-state", "closed");
-    // }
   };
 
   const handleClick = () => {
@@ -113,15 +127,15 @@ export default function ListTodo({ ListTodo, token }: Props) {
               value={`item-${i + 1}`}
             >
               <AccordionTrigger className="text-sm mx-2 flex my-2">
-                <Plus className="w-4 h-4 my-auto" />
+                {/* <Plus className="w-4 h-4 my-auto" /> */}
                 <span className="mx-2">{item.title}</span>
+                <Badge variant="destructive" className={`${level[i] == 1? 'bg-red-600' : level[i] == 2? 'bg-yellow-400' : 'bg-green-600'} text-white`}>
+                  {level[i] == 1? 'High' : level[i] == 2? 'Medium' : 'Low'}
+                </Badge>
+                {/* <div> */}
+                  {/* {format(dueDates[i], "PPP")} */}
+                {/* </div> */}
               </AccordionTrigger>
-              {/* <div className="text-xs mx-2 rounded-md my-1 border inline-block">
-                <div className="flex p-1 ">
-                  <CalendarDays className="w-4 h-4 my-auto" />
-                  <span className="mx-2">23 Jun 2024</span> 
-                </div>
-              </div> */}
               <AccordionContent className="my-1 mx-2">
                 <div className="flex justify-end w-full gap-1">
                   {isReadOnly ? (
@@ -159,6 +173,11 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   name="startDate"
                   value={dates ? getDDMMYYY(dates[i]) : ""}
                 />
+                <input
+                  type="hidden"
+                  name="dueDate"
+                  value={dueDates ? getDDMMYYY(dueDates[i]) : ""}
+                />
                 <input type="hidden" name="level" value={level[i]} />
                 <Input
                   className="my-1"
@@ -179,18 +198,35 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   maxLength={1000}
                 />
                 <div className="flex gap-1">
-                  <DatePicker
-                    readonly={isReadOnly}
-                    date={dates[i]}
-                    setDate={(date) =>
-                      setDates((prev: any) => ({ ...prev, [i]: date }))
-                    }
-                  />
-                  <ComboboxLevel 
-                    setValue={(level) => setLevel((prev:any) => ({...prev, [i] : level}))}
-                    value={level[i]}
-                    readonly={isReadOnly}
-                  />
+                  <div>
+                    <Label className="block my-1">Start Date</Label>
+                    <DatePicker
+                      readonly={isReadOnly}
+                      date={dates[i]}
+                      setDate={(date) =>
+                        setDates((prev: any) => ({ ...prev, [i]: date }))
+                      }
+                      label="Start Date"
+                    />
+                  </div>
+                  <div>
+                    <Label className="block my-1">Due Date</Label>
+                    <DatePicker
+                      readonly={isReadOnly}
+                      date={dueDates[i]}
+                      setDate={(dueDate) =>
+                        setDueDates((prev: any) => ({ ...prev, [i]: dueDate }))
+                      }
+                      label="Start Date"
+                    />
+                  </div>
+                  <div className="mt-auto">
+                    <ComboboxLevel 
+                      setValue={(level) => setLevel((prev:any) => ({...prev, [i] : level}))}
+                      value={level[i]}
+                      readonly={isReadOnly}
+                    />
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>

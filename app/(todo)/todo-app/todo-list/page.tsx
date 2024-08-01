@@ -15,7 +15,7 @@ export default async function TodoList() {
     <div>
       <div className="text-4xl font-bold">Todo List</div>
       <div className=" w-full my-10 rounded-md ">
-        <div className="font-semibold">Today</div>
+        <div className="font-semibold">My Task</div>
           <Accordions countItem={`item-1`} title="Add New Task" className="bg-gray-100   text-gray-700">
             <FormAddTodo/>
           </Accordions>

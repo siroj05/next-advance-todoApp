@@ -10,6 +10,7 @@ export const AddTodoApi = async (FormData: FormData) => {
   const userId = FormData.get("userId") as string;
   const token = FormData.get("token") as string;
   const startDate = FormData.get("startDate") as string;
+  const dueDate = FormData.get("dueDate") as string;
 
   if(title.length > 50) return {validation : 'Max Length 10!'}
   if(description.length > 1000) return {validation : 'Max Length 1000!'}
@@ -20,7 +21,7 @@ export const AddTodoApi = async (FormData: FormData) => {
     description: description,
     level : level,
     start_date: startDate,
-    end_date: "07-09-2024",
+    end_date: dueDate,
   };
   console.log(todo)
   const res = await fetch("http://localhost:1372/addTodo", {
@@ -69,6 +70,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   const title = FormData.get('title') as string
   const description = FormData.get('description') as string
   const startDate = FormData.get("startDate") as string;
+  const dueDate = FormData.get("dueDate") as string;
   const level = FormData.get("level") as string;
 
   if(title.length > 50) return {validation : 'Max Length 10!'}
@@ -78,9 +80,10 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
     title : title,
     description : description,
     level : level,
-    start_date: startDate
+    start_date: startDate,
+    end_date: dueDate
   }
-  
+  console.log(editData)
   const res = await fetch(`http://localhost:1372/editTodo/${id}`,{
     method : 'PUT',
     headers : {
