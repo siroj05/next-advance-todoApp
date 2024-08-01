@@ -18,10 +18,11 @@ import { SquarePen } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { DatePicker, getDDMMYYY } from "@/components/date-picker";
 import { CalendarDays } from 'lucide-react';
-import { ComboboxLevel } from "@/components/combobox/combobox";
+import { ComboboxLevel } from "@/components/combobox/level-dropdown";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns"
+import parseDate from "@/app/utils/parse-date";
 interface Props {
   ListTodo: any;
   token: string;
@@ -47,11 +48,6 @@ export default function ListTodo({ ListTodo, token }: Props) {
       },
       {}
     )
-
-    const parseDate = (dateString: string): Date => {
-      const [day, month, year] = dateString.split("-").map(Number);
-      return new Date(year, month - 1, day);
-    };
 
     const initialDates = ListTodo.reduce(
       (acc: Record<number, Date>, item: DetailListTodoModel, index: number) => {
@@ -127,14 +123,10 @@ export default function ListTodo({ ListTodo, token }: Props) {
               value={`item-${i + 1}`}
             >
               <AccordionTrigger className="text-sm mx-2 flex my-2">
-                {/* <Plus className="w-4 h-4 my-auto" /> */}
                 <span className="mx-2">{item.title}</span>
                 <Badge variant="destructive" className={`${level[i] == 1? 'bg-red-600' : level[i] == 2? 'bg-yellow-400' : 'bg-green-600'} text-white`}>
                   {level[i] == 1? 'High' : level[i] == 2? 'Medium' : 'Low'}
                 </Badge>
-                {/* <div> */}
-                  {/* {format(dueDates[i], "PPP")} */}
-                {/* </div> */}
               </AccordionTrigger>
               <AccordionContent className="my-1 mx-2">
                 <div className="flex justify-end w-full gap-1">

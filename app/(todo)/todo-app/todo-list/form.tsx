@@ -9,8 +9,9 @@ import AddTodoButton from "./add-todo";
 import ToastSuccess from "@/components/toast-success";
 import { DatePicker } from "@/components/date-picker";
 import { getDDMMYYY } from "@/components/date-picker";
-import { ComboboxLevel } from "@/components/combobox/combobox";
+import { ComboboxLevel } from "@/components/combobox/level-dropdown";
 import { Label } from "@/components/ui/label";
+import { ComboboxStatus } from "@/components/combobox/status-dropdown";
 
 export default function FormAddTodo() {
   const ref = useRef<HTMLFormElement>(null);
@@ -20,6 +21,7 @@ export default function FormAddTodo() {
   const [date, setDate] = useState<Date>()
   const [dueDate, setDueDate] = useState<Date>()
   const [level, setLevel] = useState<any>()
+  const [status, setStatus] = useState<any>()
 
   if (isSuccess) {
     setTimeout(() => {
@@ -79,10 +81,14 @@ export default function FormAddTodo() {
               label="Pick a Date"
             />
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto flex gap-1">
             <ComboboxLevel
               setValue={setLevel}
               value={level}
+            />
+            <ComboboxStatus
+              setValue={setStatus}
+              value={status}
             />  
           </div>
         </div>

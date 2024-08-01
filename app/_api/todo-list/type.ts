@@ -16,9 +16,3 @@ export interface DetailListTodoModel {
   title : string
   userId : string
 }
-
-export interface levelTodo{
-  id:number
-  levelName : string
-  CodeLevel : string
-}
