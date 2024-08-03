@@ -50,6 +50,7 @@ export default function FormAddTodo() {
         <input type="hidden" name="level" value={level} /> 
         <input type="hidden" name="startDate" value={date ? getDDMMYYY(date) : ''} /> 
         <input type="hidden" name="dueDate" value={dueDate ? getDDMMYYY(dueDate) : ''} /> 
+        <input type="hidden" name="status" value={status} /> 
         <Input
           className="my-1"
           id="title"
@@ -88,7 +89,7 @@ export default function FormAddTodo() {
             />
             <ComboboxStatus
               setValue={setStatus}
-              value={status}
+              value={status!}
             />  
           </div>
         </div>

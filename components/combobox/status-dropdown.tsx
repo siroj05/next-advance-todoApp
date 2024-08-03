@@ -1,14 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
-
+import {
+  ArrowUpCircle,
+  CheckCircle2,
+  Circle,
+  HelpCircle,
+  XCircle,
+  CirclePlus, 
+  Check
+} from "lucide-react"
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -19,7 +28,6 @@ import GetToken from "@/app/_api/token";
 import { getStatus } from "@/app/_api/status/api";
 import { Button } from "../ui/button-ui";
 import { status } from "@/app/_api/status/type";
-import { Input } from "../ui/input-ui";
 
 interface Props {
   setValue : (value : any) => void
@@ -46,56 +54,66 @@ export function ComboboxStatus(
     get();
   }, []);
 
+  const selected = data?.find((item: status) => item?.statusCode === value)?.statusName
+  let Icon = data?.find((item: status) => item?.statusCode === value)?.icon
+
+  let SelectedIcon 
+  if( Icon == 'ArrowUpCircle') {SelectedIcon = ArrowUpCircle}
+  else if(Icon == 'CheckCircle2') {SelectedIcon = CheckCircle2}
+  else if (Icon == 'Circle'){SelectedIcon = Circle}
+  else if (Icon == 'HelpCircle' ){SelectedIcon = HelpCircle}
+  else if(Icon == 'XCircle') {SelectedIcon = XCircle}
+  else {SelectedIcon = CirclePlus}
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={`w-[180px] justify-between ${readonly? 'bg-orange-50' : 'bg-white'} rounded-md`}
-          disabled={readonly}
-        >
-          {value
-            ? data?.find((item: status) => item.statusCode === value)?.statusName
-            : "Set status"}
-          {
-            !readonly &&
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          }
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[180px] p-0 bg-gray-50 text-gray-700">
-        <Command>
-          <Input type="text" name="" id="" placeholder="Search.." className="rounded-none border-none bg-gray-50 p-2"/>
-          <CommandGroup>
-            <CommandGroup>
-              {data?.map((data: any, i:number) => (
-                <CommandItem
-                  key={i}
-                  value={data}
-                  onSelect={() => {
-                    setValue(
-                      data?.statusCode
-                    );
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === data?.statusCode
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {data.statusCode}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
+    <div className="flex items-center">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            // size="sm"
+            className={`w-[150px] ${readonly? 'bg-orange-50' : 'bg-white'} rounded-md`}
+          >
+            {value ? (
+              <>
+                <SelectedIcon className="mr-2 h-4 w-4 shrink-0 text-black" />
+                {selected}
+              </>
+            ) : (
+              <>+ Set status</>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="p-0 bg-gray-50 text-gray-700" side="right" align="start">
+          <Command>
+            <CommandInput placeholder="Change status..." />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup>
+                {data?.map((data:status) => (
+                  <CommandItem
+                    key={data.statusCode}
+                    value={data.statusCode}
+                    onSelect={() => {
+                      setValue(data.statusCode)
+                      setOpen(false)
+                    }}
+                  >
+                   {<Check
+                      className={cn(
+                        "mr-2 h-4 w-4 text-black",
+                        value === data.statusCode
+                          ? "opacity-100"
+                          : "opacity-40"
+                      )}
+                    />}
+                    <span>{data.statusName}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
 }

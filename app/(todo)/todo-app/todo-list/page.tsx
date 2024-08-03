@@ -12,7 +12,7 @@ export default async function TodoList() {
   }
   const listTodo = await ListTodoApi(token.value)
   return (
-    <div>
+    <div className="">
       <div className="text-4xl font-bold">Todo List</div>
       <div className=" w-full my-10 rounded-md ">
         <div className="font-semibold">My Task</div>

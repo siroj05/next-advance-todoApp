@@ -5,6 +5,7 @@ export interface AddTodoModel {
   level: string;
   start_date: string;
   end_date: string;
+  status: string
 }
 
 export interface DetailListTodoModel {
@@ -15,4 +16,5 @@ export interface DetailListTodoModel {
   level : string
   title : string
   userId : string
+  status : string
 }

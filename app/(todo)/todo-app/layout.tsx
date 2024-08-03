@@ -8,9 +8,9 @@ interface Props {
 export default function Layout({ children }: Props) {
   return (
     <>
-      <div className="flex min-h-dvh">
-          <Sidebar />
-        <div className="p-10 w-full overflow-auto">{children}</div>
+      <div className="lg:flex">
+        <Sidebar />
+        <div className="w-full sm:p-5 lg:my-10 overflow-auto">{children}</div>
       </div>
     </>
   );

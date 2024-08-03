@@ -2,7 +2,20 @@
 import CardLoginForm from "@/components/card-login";
 import ToastAuth from "@/components/toast-auth";
 import { useState } from "react";
-export default function Home() {
+import { Provider } from 'react-redux'
+import store from "@/store/store";
+
+export default function App() {
+  return (
+    <>
+      <Provider store={store}>
+        <Home/>
+      </Provider>
+    </>
+  )
+}
+
+function Home() {
   const [isSuccess, setIsSuccess] = useState<boolean>(false)
   if(isSuccess){
     setTimeout(() => {

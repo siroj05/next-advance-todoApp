@@ -3,6 +3,7 @@ import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { AddTodoModel } from "./type";
 import { redirect } from 'next/navigation'
+import { url } from "@/app/utils/urls";
 export const AddTodoApi = async (FormData: FormData) => {
   const title = FormData.get("title") as string;
   const description = FormData.get("description") as string;
@@ -11,6 +12,7 @@ export const AddTodoApi = async (FormData: FormData) => {
   const token = FormData.get("token") as string;
   const startDate = FormData.get("startDate") as string;
   const dueDate = FormData.get("dueDate") as string;
+  const status = FormData.get("status") as string;
 
   if(title.length > 50) return {validation : 'Max Length 10!'}
   if(description.length > 1000) return {validation : 'Max Length 1000!'}
@@ -22,9 +24,10 @@ export const AddTodoApi = async (FormData: FormData) => {
     level : level,
     start_date: startDate,
     end_date: dueDate,
+    status:status
   };
-  console.log(todo)
-  const res = await fetch("http://localhost:1372/addTodo", {
+  
+  const res = await fetch(`${url}/addTodo`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +46,7 @@ export const AddTodoApi = async (FormData: FormData) => {
 };
 
 export const ListTodoApi = async (token : string) => {
-  const res = await fetch('http://localhost:1372/todos',{
+  const res = await fetch(`${url}/todos`,{
     method : 'GET',
     headers : {
       'Content-Type' : 'application/json',
@@ -72,6 +75,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
   const startDate = FormData.get("startDate") as string;
   const dueDate = FormData.get("dueDate") as string;
   const level = FormData.get("level") as string;
+  const status = FormData.get("status") as string;
 
   if(title.length > 50) return {validation : 'Max Length 10!'}
   if(description.length > 1000) return {validation : 'Max Length 1000!'}
@@ -81,10 +85,10 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
     description : description,
     level : level,
     start_date: startDate,
-    end_date: dueDate
+    end_date: dueDate,
+    status : status
   }
-  console.log(editData)
-  const res = await fetch(`http://localhost:1372/editTodo/${id}`,{
+  const res = await fetch(`${url}/editTodo/${id}`,{
     method : 'PUT',
     headers : {
       'Content-Type' : 'application/json',
@@ -105,7 +109,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
 
 export const DeleteTodoApi = async (token : string, FormData:FormData) => {
   const id = FormData.get('id') as string
-  const res = await fetch(`http://localhost:1372/deleteTodo/${id}`,{
+  const res = await fetch(`${url}/deleteTodo/${id}`,{
     method : 'DELETE',
     headers : {
       'Content-Type' : 'application/json',

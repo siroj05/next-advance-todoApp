@@ -1,5 +1,5 @@
 "use client";
-import { Accordions } from "@/components/accordion";
+// import { Accordions } from "@/components/accordion";
 import { Input } from "@/components/ui/input-ui";
 import { Textarea } from "@/components/ui/text-area";
 import React, { useEffect, useState } from "react";
@@ -12,17 +12,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Plus } from "lucide-react";
 import ToastSuccess from "@/components/toast-success";
 import { SquarePen } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { DatePicker, getDDMMYYY } from "@/components/date-picker";
-import { CalendarDays } from 'lucide-react';
 import { ComboboxLevel } from "@/components/combobox/level-dropdown";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns"
-import parseDate from "@/app/utils/parse-date";
+// import { ComboboxStatus } from "@/components/combobox/status-dropdown";
+import { status as stats } from "@/app/_api/status/type";
+import { useInitialDates } from "@/app/utils/initial-dates";
+import { useInitialLevel } from "@/app/utils/initial-level";
+import { useInitialDueDates } from "@/app/utils/initial-due-dates";
+import { useInitialStatus } from "@/app/utils/initial-status";
+import { ComboboxStatus } from "@/components/combobox/status-dropdown";
 interface Props {
   ListTodo: any;
   token: string;
@@ -32,57 +35,22 @@ export default function ListTodo({ ListTodo, token }: Props) {
   const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
   const [todos, setTodos] = useState<DetailListTodoModel[]>([]);
   const [dates, setDates] = useState<Record<number, Date>>({});
-  const [dueDates, setDueDates] = useState<Record<number, Date>>({})
+  const [dueDates, setDueDates] = useState<Record<number, Date>>({});
   const [isSuccess, setIsSuccess] = useState<any>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
-  const [level, setLevel] = useState<any>()
+  const [level, setLevel] = useState<any>();
+  const [status, setStatus] = useState<any>();
 
   useEffect(() => {
     setTodos(ListTodo);
-
-    const initialLevel = ListTodo.reduce(
-      (acc: any, item: DetailListTodoModel, index:number)=>{
-        const level = item.level
-        acc[index] = level
-        return acc
-      },
-      {}
-    )
-
-    const initialDates = ListTodo.reduce(
-      (acc: Record<number, Date>, item: DetailListTodoModel, index: number) => {
-        const date = parseDate(item.start_date);
-        if (isNaN(date.getTime())) {
-          console.error(
-            `Invalid date format for item at index ${index}:`,
-            item.start_date
-          );
-        } else {
-          acc[index] = date;
-        }
-        return acc;
-      },
-      {}
-    );
-
-    const initialDueDates = ListTodo.reduce(
-      (acc : Record<number, Date>, item : DetailListTodoModel, index:number) => {
-        const date = parseDate(item.end_date);
-        if(isNaN(date.getTime())){
-          console.error(
-            `Invalid date format for item at index ${index}:`,
-            item.start_date
-          );
-        }else{
-          acc[index] = date
-        }
-        return acc
-      },{}
-    )
-
-    setDueDates(initialDueDates)
-    setLevel(initialLevel)
+    const initialLevel = useInitialLevel(ListTodo);
+    const initialDates = useInitialDates(ListTodo);
+    const initialDueDates = useInitialDueDates(ListTodo);
+    const initialStatus = useInitialStatus(ListTodo);
+    setDueDates(initialDueDates);
+    setLevel(initialLevel);
     setDates(initialDates);
+    setStatus(initialStatus);
   }, [ListTodo]);
 
   if (isSuccess) {
@@ -90,7 +58,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
       setIsSuccess(false);
     }, 1000);
   }
-  
+
   const handleClicAccordion = (e: any) => {
     const target = e.currentTarget;
     const state = target.getAttribute("data-state");
@@ -124,8 +92,17 @@ export default function ListTodo({ ListTodo, token }: Props) {
             >
               <AccordionTrigger className="text-sm mx-2 flex my-2">
                 <span className="mx-2">{item.title}</span>
-                <Badge variant="destructive" className={`${level[i] == 1? 'bg-red-600' : level[i] == 2? 'bg-yellow-400' : 'bg-green-600'} text-white`}>
-                  {level[i] == 1? 'High' : level[i] == 2? 'Medium' : 'Low'}
+                <Badge
+                  variant="destructive"
+                  className={`${
+                    level[i] == 1
+                      ? "bg-red-600"
+                      : level[i] == 2
+                      ? "bg-yellow-400"
+                      : "bg-green-600"
+                  } text-white text-center`}
+                >
+                  {level[i] == 1 ? "High" : level[i] == 2 ? "Medium" : "Low"}
                 </Badge>
               </AccordionTrigger>
               <AccordionContent className="my-1 mx-2">
@@ -171,6 +148,7 @@ export default function ListTodo({ ListTodo, token }: Props) {
                   value={dueDates ? getDDMMYYY(dueDates[i]) : ""}
                 />
                 <input type="hidden" name="level" value={level[i]} />
+                <input type="hidden" name="status" value={status[i]} />
                 <Input
                   className="my-1"
                   id="title"
@@ -212,10 +190,19 @@ export default function ListTodo({ ListTodo, token }: Props) {
                       label="Start Date"
                     />
                   </div>
-                  <div className="mt-auto">
-                    <ComboboxLevel 
-                      setValue={(level) => setLevel((prev:any) => ({...prev, [i] : level}))}
+                  <div className="mt-auto flex gap-1">
+                    <ComboboxLevel
+                      setValue={(level) =>
+                        setLevel((prev: any) => ({ ...prev, [i]: level }))
+                      }
                       value={level[i]}
+                      readonly={isReadOnly}
+                    />
+                    <ComboboxStatus
+                      setValue={(status) =>
+                        setStatus((prev: any) => ({ ...prev, [i]: status }))
+                      }
+                      value={status[i]}
                       readonly={isReadOnly}
                     />
                   </div>

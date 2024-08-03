@@ -1,7 +1,8 @@
+import { url } from "@/app/utils/urls";
 
 export const getStatus = async (token : any) => {
   try {
-      const res = await fetch('http://localhost:1372/status', {
+      const res = await fetch(`${url}/status`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

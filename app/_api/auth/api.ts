@@ -1,4 +1,5 @@
 "use server";
+import { url } from '@/app/utils/urls';
 import { cookies } from 'next/headers'
 export interface userRegis {
   name : string
@@ -22,7 +23,7 @@ export const registerApi = async (FormData: FormData) => {
     password : password
   }
 
-  const res = await fetch("http://localhost:1372/register", {
+  const res = await fetch(`${url}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dataUser),
@@ -48,7 +49,7 @@ export const loginApi = async (FormData : FormData) => {
     password : password
   }
 
-  const res = await fetch("http://localhost:1372/login",{
+  const res = await fetch(`${url}/login`,{
     method : "POST",
     headers: { "Content-Type": "application/json" },
     body : JSON.stringify(userLogin)
