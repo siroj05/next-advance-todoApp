@@ -27,7 +27,7 @@ export const AddTodoApi = async (FormData: FormData) => {
     status:status
   };
   
-  const res = await fetch(`${url}/addTodo`, {
+  const res = await fetch(`${url}/todo/addTodo`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export const AddTodoApi = async (FormData: FormData) => {
 };
 
 export const ListTodoApi = async (token : string) => {
-  const res = await fetch(`${url}/todos`,{
+  const res = await fetch(`${url}/todo/todos`,{
     method : 'GET',
     headers : {
       'Content-Type' : 'application/json',
@@ -88,7 +88,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
     end_date: dueDate,
     status : status
   }
-  const res = await fetch(`${url}/editTodo/${id}`,{
+  const res = await fetch(`${url}/todo/editTodo/${id}`,{
     method : 'PUT',
     headers : {
       'Content-Type' : 'application/json',
@@ -109,7 +109,7 @@ export const EditTodoApi = async (token : string, FormData: FormData) => {
 
 export const DeleteTodoApi = async (token : string, FormData:FormData) => {
   const id = FormData.get('id') as string
-  const res = await fetch(`${url}/deleteTodo/${id}`,{
+  const res = await fetch(`${url}/todo/deleteTodo/${id}`,{
     method : 'DELETE',
     headers : {
       'Content-Type' : 'application/json',

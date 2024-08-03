@@ -1,5 +1,4 @@
 "use client";
-// import { Accordions } from "@/components/accordion";
 import { Input } from "@/components/ui/input-ui";
 import { Textarea } from "@/components/ui/text-area";
 import React, { useEffect, useState } from "react";
@@ -19,8 +18,6 @@ import { DatePicker, getDDMMYYY } from "@/components/date-picker";
 import { ComboboxLevel } from "@/components/combobox/level-dropdown";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-// import { ComboboxStatus } from "@/components/combobox/status-dropdown";
-import { status as stats } from "@/app/_api/status/type";
 import { useInitialDates } from "@/app/utils/initial-dates";
 import { useInitialLevel } from "@/app/utils/initial-level";
 import { useInitialDueDates } from "@/app/utils/initial-due-dates";

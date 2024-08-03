@@ -2,7 +2,7 @@ import { url } from "@/app/utils/urls";
 
 export const getLevelTodo = async (token : any) => {
   try {
-      const res = await fetch(`${url}/levelPriority`, {
+      const res = await fetch(`${url}/meta/levelPriority`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

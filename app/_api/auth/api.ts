@@ -22,8 +22,8 @@ export const registerApi = async (FormData: FormData) => {
     username : username,
     password : password
   }
-
-  const res = await fetch(`${url}/register`, {
+  
+  const res = await fetch(`${url}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dataUser),
@@ -49,11 +49,12 @@ export const loginApi = async (FormData : FormData) => {
     password : password
   }
 
-  const res = await fetch(`${url}/login`,{
+  const res = await fetch(`${url}/auth/login`,{
     method : "POST",
     headers: { "Content-Type": "application/json" },
     body : JSON.stringify(userLogin)
   })
+
   const data = await res.json()
   const maxAge = 60 * 60 * 1000
   cookies().set('token', data.token, { expires: Date.now() + maxAge });

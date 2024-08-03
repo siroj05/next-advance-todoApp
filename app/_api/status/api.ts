@@ -2,7 +2,7 @@ import { url } from "@/app/utils/urls";
 
 export const getStatus = async (token : any) => {
   try {
-      const res = await fetch(`${url}/status`, {
+      const res = await fetch(`${url}/meta/status`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
