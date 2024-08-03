@@ -83,36 +83,39 @@ export function ComboboxStatus(
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0 bg-gray-50 text-gray-700" side="right" align="start">
-          <Command>
-            <CommandInput placeholder="Change status..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
-                {data?.map((data:status) => (
-                  <CommandItem
-                    key={data.statusCode}
-                    value={data.statusCode}
-                    onSelect={() => {
-                      setValue(data.statusCode)
-                      setOpen(false)
-                    }}
-                  >
-                   {<Check
-                      className={cn(
-                        "mr-2 h-4 w-4 text-black",
-                        value === data.statusCode
-                          ? "opacity-100"
-                          : "opacity-40"
-                      )}
-                    />}
-                    <span>{data.statusName}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
+        {
+          !readonly && 
+          <PopoverContent className="p-0 bg-gray-50 text-gray-700" side="right" align="start">
+            <Command>
+              <CommandInput placeholder="Change status..." />
+              <CommandList>
+                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandGroup>
+                  {data?.map((data:status) => (
+                    <CommandItem
+                      key={data.statusCode}
+                      value={data.statusCode}
+                      onSelect={() => {
+                        setValue(data.statusCode)
+                        setOpen(false)
+                      }}
+                    >
+                    {<Check
+                        className={cn(
+                          "mr-2 h-4 w-4 text-black",
+                          value === data.statusCode
+                            ? "opacity-100"
+                            : "opacity-40"
+                        )}
+                      />}
+                      <span>{data.statusName}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        }
       </Popover>
     </div>
   )

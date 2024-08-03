@@ -33,7 +33,6 @@ export default function FormLogin({
             let res = await loginApi(formData)
             ref.current?.reset()
             if(res.token){
-              const oneHour = 60 * 60 * 1000
               setErr('')
               router.push('/todo-app')
             }else{
